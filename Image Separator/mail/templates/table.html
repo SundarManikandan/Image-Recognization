@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Table</title>
+    <style>
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black with opacity */
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top, 15% from the bottom and centered */
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            padding: 20px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Table</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Action</th> <!-- Added a new column for the action button -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+            <tr>
+                <td>{{ row['name'] }}</td>
+                <td>{{ row['email'] }}</td>
+                <td>{{ row['title'] }}</td>
+                <td>{{ row['company'] }}</td>
+                <td>{{ row['location'] }}</td>
+                <td>
+                    <form action="/send_email" method="post">
+                        <input type="hidden" name="name" value="{{ row['name'] }}">
+                        <input type="hidden" name="email" value="{{ row['email'] }}">
+                        <input type="hidden" name="title" value="{{ row['title'] }}">
+                        <input type="hidden" name="company" value="{{ row['company'] }}">
+                        <input type="hidden" name="location" value="{{ row['location'] }}">
+                        <button type="submit">Send Email</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>{{ success_message }}</p>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>{{ error_message }}</p>
+        </div>
+    </div>
+
+    <script>
+        // Get the modals
+        var successModal = document.getElementById('successModal');
+        var errorModal = document.getElementById('errorModal');
+
+        // Get the close buttons
+        var successClose = successModal.getElementsByClassName('close')[0];
+        var errorClose = errorModal.getElementsByClassName('close')[0];
+
+        // Close the modals when the close button is clicked
+        successClose.onclick = function() {
+            successModal.style.display = 'none';
+        }
+
+        errorClose.onclick = function() {
+            errorModal.style.display = 'none';
+        }
+
+        // Show the modals if messages are present
+        {% if success_message %}
+            successModal.style.display = 'block';
+        {% endif %}
+        
+        {% if error_message %}
+            errorModal.style.display = 'block';
+        {% endif %}
+    </script>
+</body>
+</html>
